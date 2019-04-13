@@ -3,8 +3,7 @@ package type_t;
 import interfaces.Type_t_itf;
 
 public class T_Int implements Type_t_itf {
-	private int i; 
-
+	private Integer i; 
 	
 	/**
 	 * a default constructor used to instanciate a Column of type int
@@ -14,7 +13,7 @@ public class T_Int implements Type_t_itf {
 		this.i = 1;
 	}
 
-	public T_Int(int i) {
+	public T_Int(Integer i) {
 		this.i = i;
 	}
 
@@ -23,7 +22,8 @@ public class T_Int implements Type_t_itf {
 	}
 
 	public void print() {
-		System.out.print(this.i);
+		if (!isNull())
+			System.out.print(this.i);
 	}
 
 	public int getI() {
@@ -32,6 +32,10 @@ public class T_Int implements Type_t_itf {
 
 	public void setI(int i) {
 		this.i = i;
+	}
+
+	public boolean isNull() {
+		return i == null;
 	}
 	
 }

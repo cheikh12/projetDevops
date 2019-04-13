@@ -6,4 +6,6 @@ public interface Type_t_itf {
 	
 	public void print();
 	
+	public boolean isNull();
+	
 }
