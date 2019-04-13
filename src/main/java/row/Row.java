@@ -18,5 +18,7 @@ public class Row {
 		this.element = element;
 	}
 	
-	
+	public String toString() {
+		return element.toString();
+	}
 }

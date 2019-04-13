@@ -36,4 +36,7 @@ public class T_Bool implements Type_t_itf  {
 		return false;
 	}
 
+	public String toString() {
+		return String.valueOf(b);
+	}
 }

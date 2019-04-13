@@ -38,4 +38,8 @@ public class T_Int implements Type_t_itf {
 		return i == null;
 	}
 	
+	public String toString() {
+		return String.valueOf(i);
+	}
+	
 }
