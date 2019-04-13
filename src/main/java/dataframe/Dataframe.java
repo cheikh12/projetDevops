@@ -18,7 +18,8 @@ public class Dataframe implements Dataframe_itf {
 	}
 	
 	public Dataframe(String[][] data) {
-		
+		String[] columnNames = data[0];
+		String[] columnTypes = data[1];
 	}
 	
 	public void showAll() {
