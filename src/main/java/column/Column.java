@@ -38,9 +38,24 @@ public class Column implements Comparable {
 		if (o instanceof Column) {
 			return this.name.compareTo(((Column) o).name);
 		}
+		// add else 
 		return 0;
 	}
 	
-	
+	@Override
+    public boolean equals(Object o) {
+		if (o instanceof Column) {
+			return this.getName().equals( ((Column) o).getName() ) && this.getType().equals( ((Column) o).getType());
+		} 
+		else
+			try {
+				throw new Exception("Comparing with incomparable object type");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return false;
+		
+	}
 	
 }

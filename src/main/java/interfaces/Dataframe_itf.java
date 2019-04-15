@@ -10,9 +10,9 @@ public interface Dataframe_itf {
 	
 	public void showTail(int n);
 	
-	public Dataframe selectRow(int idx);
+	public Dataframe selectRow(int idx) throws Exception;
 	
-	public Dataframe selectRows(int[] idx);
+	public Dataframe selectRows(int[] idx) throws Exception;
 	
 	public Dataframe selectRowsBetween(int i, int j);
 	
