@@ -36,5 +36,9 @@ public class T_String implements Type_t_itf {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public String toString() {
+		return s;
+	}
 
 }

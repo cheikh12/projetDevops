@@ -33,4 +33,8 @@ public class T_Double implements Type_t_itf {
 	public boolean isNull() {
 		return d == null;
 	}
+	
+	public String toString() {
+		return String.valueOf(d);
+	}
 }

@@ -8,4 +8,6 @@ public interface Type_t_itf {
 	
 	public boolean isNull();
 	
+	public String toString();
+	
 }
