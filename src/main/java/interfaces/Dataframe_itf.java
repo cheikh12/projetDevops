@@ -16,14 +16,14 @@ public interface Dataframe_itf {
 	
 	public Dataframe selectRowsBetween(int i, int j);
 	
-	public Dataframe selectColumn(String column);
+	public Dataframe selectColumn(String column) throws Exception;
 	
-	public Dataframe selectColumns(String[] columns);
+	public Dataframe selectColumns(String[] columns) throws Exception;
 	
-	public Type_t_itf min(String column);
+	public Double[] min(String[] columns) throws Exception;
 	
-	public Type_t_itf max(String column);
+	public Double[] max(String[] columns) throws Exception;
 	
-	public Type_t_itf avg(String column);
+	public Double[] mean(String[] column) throws Exception;
 	
 }

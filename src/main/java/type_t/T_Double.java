@@ -37,4 +37,12 @@ public class T_Double implements Type_t_itf {
 	public String toString() {
 		return String.valueOf(d);
 	}
+
+	/*
+	@Override
+	public Double getValue() {
+		// TODO Auto-generated method stub
+		return d.doubleValue();
+	}
+	*/
 }

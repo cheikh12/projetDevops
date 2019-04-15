@@ -41,4 +41,11 @@ public class T_String implements Type_t_itf {
 		return s;
 	}
 
+	/*
+	@Override
+	public String getValue() {
+		// TODO Auto-generated method stub
+		return s;
+	}
+	*/
 }

@@ -2,7 +2,7 @@ package type_t;
 
 import interfaces.Type_t_itf;
 
-public class T_Bool implements Type_t_itf  {
+public class T_Bool implements Type_t_itf {
 	
 	private Boolean b;
 	
@@ -39,4 +39,12 @@ public class T_Bool implements Type_t_itf  {
 	public String toString() {
 		return String.valueOf(b);
 	}
+
+	/*
+	@Override
+	public Boolean getValue() {
+		// TODO Auto-generated method stub
+		return b.booleanValue();
+	}
+	*/
 }

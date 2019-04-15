@@ -41,5 +41,12 @@ public class T_Int implements Type_t_itf {
 	public String toString() {
 		return String.valueOf(i);
 	}
-	
+
+	/*
+	@Override
+	public Integer getValue() {
+		// TODO Auto-generated method stub
+		return i.intValue();
+	}
+	*/
 }

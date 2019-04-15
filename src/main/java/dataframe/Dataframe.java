@@ -16,9 +16,10 @@ public class Dataframe implements Dataframe_itf {
 	
 	private LinkedHashMap<Column, ArrayList<Row>> dataSet;
 	private TreeMap<Column, ArrayList<Row>> sortedDataSet;
+	private TreeMap<String, String> sortedColumnTypes;
 	private String[][] dataSet2DArray;
 	private String[] columnTypes;
-	private String[] sortedColumnTypes;
+	
 	private int nbDataRows;
 		
 	public Dataframe(String csvFileName) {
@@ -33,7 +34,7 @@ public class Dataframe implements Dataframe_itf {
 				throw new Exception("Invalid data type for column '" + data[0][i] + "'");
 		}
 		columnTypes = data[1];
-		sortedColumnTypes = new String[data[1].length];
+		this.sortedColumnTypes = new TreeMap<String, String>(); // new String[data[1].length];
 		
 		int nbRows = data.length;
 		this.dataSet = new LinkedHashMap<Column, ArrayList<Row>>();
@@ -70,22 +71,31 @@ public class Dataframe implements Dataframe_itf {
 				for (int r = 2; r < nbRows; r++) {
 
 					Row currentRow = null;
-					String currentRowElement = data[r][c];
+					String currentRowElement = data[r][c].trim();
 					//System.out.println(currentRowElement);
 					
 					if (columnType instanceof T_Int) {
-						Integer element = Integer.parseInt(currentRowElement);
+						Integer element = null;
+						if (!currentRowElement.equals(""))
+							element = Integer.parseInt(currentRowElement);
 						currentRow = new Row(new T_Int(element));
 					}
 					else if (columnType instanceof T_Double) {
-						double element = Double.parseDouble(currentRowElement);
+						Double element = null;
+						if (!currentRowElement.equals(""))
+							element = Double.parseDouble(currentRowElement);
 						currentRow = new Row(new T_Double(element));
 					}
 					else if (columnType instanceof T_String) {
-						currentRow = new Row(new T_String(currentRowElement));
+						String element = null;
+						if (!currentRowElement.equals(""))
+							element = currentRowElement;
+						currentRow = new Row(new T_String(element));
 					}
 					else if (columnType instanceof T_Bool) {
-						boolean element = Boolean.valueOf(currentRowElement);
+						Boolean element = null;
+						if (!currentRowElement.equals(""))
+							element = Boolean.valueOf(currentRowElement);
 						currentRow = new Row(new T_Bool(element));
 					}
 					else {
@@ -109,16 +119,19 @@ public class Dataframe implements Dataframe_itf {
 		}
 		
 		init2DArrayOfDataSet();
-		Set<Column> cols = sortedDataSet.keySet();
-		int sortedColumnTypesIdx = 0;
-		for (Column c : cols) {
-			this.sortedColumnTypes[sortedColumnTypesIdx] = c.getType();
-			sortedColumnTypesIdx++;
-			//System.out.println(c.getName());
-		}
 		
+		// this last block initializes the column types of the sorted columns
+		Set<Column> cols = sortedDataSet.keySet();
+		//int sortedColumnTypesIdx = 0;
+		for (Column c : cols) {
+			this.sortedColumnTypes.put(c.getName(), c.getType());
+			//this.sortedColumnTypes[sortedColumnTypesIdx] = c.getType();
+			//sortedColumnTypesIdx++;
+		}
+		/*
 		for (int i = 0; i < sortedColumnTypes.length; i++)
 			System.out.println(sortedColumnTypes[i]);
+			*/
 	}
 	
 	private boolean isValidType(String type) {
@@ -146,7 +159,10 @@ public class Dataframe implements Dataframe_itf {
 			ArrayList<Row> currentColData = (ArrayList<Row>) dataValuesArray[c];
 			
 			for (int l = 0; l < currentColData.size(); l++) {
-				dataSet2DArray[l + 1][c] = (String) currentColData.get(l).toString();
+				if (currentColData.get(l).getElement().isNull())
+					dataSet2DArray[l + 1][c] = "";
+				else
+					dataSet2DArray[l + 1][c] = (String) currentColData.get(l).toString();
 			}
 		}
 	}
@@ -195,6 +211,11 @@ public class Dataframe implements Dataframe_itf {
 			else
 				nbRowsToShow = this.dataSet2DArray.length;
 		}
+		
+		for (int c = 0; c < this.dataSet2DArray[0].length; c++)
+			System.out.print(this.dataSet2DArray[0][c] + "\t\t\t" );
+		
+		System.out.println();
 		
 		for (int i = this.dataSet2DArray.length - nbRowsToShow + 1; i < this.dataSet2DArray.length; i++) {
 			for (int j = 0; j < this.dataSet2DArray[0].length; j++) {
@@ -285,25 +306,252 @@ public class Dataframe implements Dataframe_itf {
 		return null;
 	}
 	
-	public Dataframe selectColumn(String column) {
-		return null;
+	public Dataframe selectColumn(String column) throws Exception {
+		Dataframe res = null;
+		
+		if (!this.sortedColumnTypes.containsKey(column)) {
+			System.err.println("Column to select does not exist");
+			return res;
+		}
+		
+		String colType = this.sortedColumnTypes.get(column);
+		Type_t_itf columnType = null;
+		
+		if (colType.equals("int")) {
+			columnType = new T_Int();
+		}
+		else if (colType.equals("double")) {
+			columnType = new T_Double();
+		}
+		else if (colType.equals("string")) {
+			columnType = new T_String();
+		}
+		else if (colType.equals("bool")) {
+			columnType = new T_Bool();
+		}
+		else {
+			throw new Exception("Unknown data type for column '" + column + "'");
+		}
+		
+		ArrayList<Row> colRows = this.sortedDataSet.get(new Column(column, columnType));
+		int nbRowsInSelectedColumn = colRows.size();
+		
+		String[][] newData = new String[nbRowsInSelectedColumn + 2][1]; // +2 for the row with the col name & row with col type
+		newData[0][0] = column;
+		newData[1][0] = colType;
+		
+		int dataRow = 2;
+		
+		for (int i = 0; i < nbRowsInSelectedColumn; i++) {
+			if (!colRows.get(i).getElement().isNull())
+				newData[dataRow][0] = colRows.get(i).toString();
+			else
+				newData[dataRow][0] = "";
+			dataRow++;
+		}
+		
+		res = new Dataframe(newData);
+		return res;
 	}
 	
-	public Dataframe selectColumns(String[] columns) {
-		return null;
+	public Dataframe selectColumns(String[] columns) throws Exception {
+		Dataframe res = null;
+		
+		int columnsArgLength = columns.length;
+		String[] columnsArgTypes = new String[columnsArgLength];
+		
+		for (int i = 0; i < columnsArgLength; i++) {
+			if (this.sortedColumnTypes.containsKey(columns[i])) {
+				columnsArgTypes[i] = this.sortedColumnTypes.get(columns[i]);
+			}
+			else {
+				System.err.println("A column to select does not exist");
+				return res;
+			}
+		}
+		
+		String[][] newData = new String[this.nbDataRows + 2][columnsArgLength];
+		
+		for (int c = 0; c < columnsArgLength; c++) {
+			String colType = columnsArgTypes[c];
+			Type_t_itf columnType = null;
+			
+			if (colType.equals("int")) {
+				columnType = new T_Int();
+			}
+			else if (colType.equals("double")) {
+				columnType = new T_Double();
+			}
+			else if (colType.equals("string")) {
+				columnType = new T_String();
+			}
+			else if (colType.equals("bool")) {
+				columnType = new T_Bool();
+			}
+			else {
+				throw new Exception("Unknown data type for column '" + columns[c] + "'");
+			}
+			
+			ArrayList<Row> colRows = this.sortedDataSet.get(new Column(columns[c], columnType));
+			
+			newData[0][c] = columns[c];
+			newData[1][c] = colType;
+			int dataRow = 2;
+			
+			for (int r = 0; r < colRows.size(); r++) {
+				if (!colRows.get(r).getElement().isNull())
+					newData[dataRow][c] = colRows.get(r).toString();
+				else
+					newData[dataRow][c] = "";
+				dataRow++;
+			}
+		}
+		
+		res = new Dataframe(newData);
+		return res;
 	}
 	
-	public Type_t_itf min(String column) {
-		return null;
+	public Double[] min(String[] columns) throws Exception {
+		int columnsArgLength = columns.length;
+		
+		if (!this.checkIfAllColumnsExist(columns))
+			throw new Exception("Unknown column in arguments!");
+		
+		String[] columnsArgTypes = this.getTypesOfColumnArgs(columns);
+		
+		Double[] res = new Double[columnsArgLength];
+		for (int i = 0; i < columnsArgLength; i++)
+			res[i] = null;
+		
+		for (int c = 0; c < columnsArgLength; c++) {
+			double minElement = Double.MAX_VALUE;
+			String colType = columnsArgTypes[c];
+			
+			if (colType.equals("int") || colType.equals("double")) {
+				Type_t_itf columnType = null;
+				
+				if (colType.equals("int"))
+					columnType = new T_Int();
+				else
+					columnType = new T_Double();
+				
+				ArrayList<Row> colRows = this.sortedDataSet.get(new Column(columns[c], columnType));
+				
+				for (int r = 0; r < colRows.size(); r++) {
+					if (!colRows.get(r).getElement().isNull()) {
+						double d = Double.valueOf(colRows.get(r).getElement().toString());
+						if (d < minElement)
+							minElement = d;
+					}
+				}
+				res[c] = minElement;
+			}
+		}
+		return res;
 	}
 	
-	public Type_t_itf max(String column) {
-		return null;
+	public Double[] max(String[] columns) throws Exception {
+		int columnsArgLength = columns.length;
+		
+		if (!this.checkIfAllColumnsExist(columns))
+			throw new Exception("Unknown column in arguments!");
+		
+		String[] columnsArgTypes = this.getTypesOfColumnArgs(columns);
+		
+		Double[] res = new Double[columnsArgLength];
+		for (int i = 0; i < columnsArgLength; i++)
+			res[i] = null;
+		
+		for (int c = 0; c < columnsArgLength; c++) {
+			double maxElement = Double.MIN_VALUE;
+			String colType = columnsArgTypes[c];
+			
+			if (colType.equals("int") || colType.equals("double")) {
+				Type_t_itf columnType = null;
+				
+				if (colType.equals("int"))
+					columnType = new T_Int();
+				else
+					columnType = new T_Double();
+				
+				ArrayList<Row> colRows = this.sortedDataSet.get(new Column(columns[c], columnType));
+				
+				for (int r = 0; r < colRows.size(); r++) {
+					if (!colRows.get(r).getElement().isNull()) {
+						double d = Double.valueOf(colRows.get(r).getElement().toString());
+						if (d > maxElement)
+							maxElement = d;
+					}
+				}
+				res[c] = maxElement;
+			}
+		}
+		return res;
 	}
 	
+	private boolean checkIfAllColumnsExist(String[] columns) {
+		int columnsArgLength = columns.length;
+		String[] columnsArgTypes = new String[columnsArgLength];
+		
+		for (int i = 0; i < columnsArgLength; i++) {
+			if (this.sortedColumnTypes.containsKey(columns[i])) {
+				columnsArgTypes[i] = this.sortedColumnTypes.get(columns[i]);
+			}
+			else {
+				return false;
+			}
+		}
+		return true;
+	}
 	
-	public Type_t_itf avg(String column) {
-		return null;
+	private String[] getTypesOfColumnArgs(String[] columns) {
+		int columnsArgLength = columns.length;
+		String[] columnsArgTypes = new String[columnsArgLength];
+		
+		for (int i = 0; i < columnsArgLength; i++) 
+			columnsArgTypes[i] = this.sortedColumnTypes.get(columns[i]);
+		
+		return columnsArgTypes;
+	}
+	
+	public Double[] mean(String[] columns) throws Exception {
+		int columnsArgLength = columns.length;
+		
+		if (!this.checkIfAllColumnsExist(columns))
+			throw new Exception("Unknown column in arguments!");
+		
+		String[] columnsArgTypes = this.getTypesOfColumnArgs(columns);
+		
+		Double[] res = new Double[columnsArgLength];
+		for (int i = 0; i < columnsArgLength; i++)
+			res[i] = null;
+		
+		for (int c = 0; c < columnsArgLength; c++) {
+			double nbNonNullElements = 0, accumulator = 0;
+			String colType = columnsArgTypes[c];
+			
+			if (colType.equals("int") || colType.equals("double")) {
+				Type_t_itf columnType = null;
+				
+				if (colType.equals("int"))
+					columnType = new T_Int();
+				else
+					columnType = new T_Double();
+				
+				ArrayList<Row> colRows = this.sortedDataSet.get(new Column(columns[c], columnType));
+				
+				for (int r = 0; r < colRows.size(); r++) {
+					if (!colRows.get(r).getElement().isNull()) {
+						accumulator += Double.valueOf(colRows.get(r).getElement().toString());// (colRows.get(r).getElement().getValue()));
+						nbNonNullElements++;
+					}
+				}
+				double nonNullMean = accumulator / nbNonNullElements ;
+				res[c] = nonNullMean;
+				//System.out.print(columns[c] + ": " + nonNullMean + "\n");
+			}
+		}
+		return res;
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -315,23 +563,29 @@ public class Dataframe implements Dataframe_itf {
 				{"3", "Bruce", "Banner", "983777.98", "43"},
 				{"4", "Peter", "Parker", "9800.98", "19"},
 				{"5", "Lizzy", "Mcguire", "9880.98", "19"},
-				{"6", "Aunt", "May", "34610.98", "68"}
+				{"6", "Aunt", "May", "", "68"}
 		};
-		/*
-		Column c1 = new Column("id", new T_Int(1));
-		Column c2 = new Column("id", new T_Double(10.0));
-		System.out.println(c1.equals(c2));
-		*/
-				
+			
 		Dataframe d = new Dataframe(data); 
 		d.showAll();
 		
 		System.out.println("\n\n\n");
 		
-		//d.showTail(4);
+		Double[] meanRes = d.min(new String[] {"id", "fname", "balance"});
+		
+		System.out.println(meanRes[0]);
+		
+		
+		
+		
+		
+		//d2.showTail(4);
 		
 		/*
-		Dataframe d2 = d.selectRows(new int[]{0, 1, 3, 5, 4});
+		Dataframe d2 = d.selectRows(new int[] {5, 2, 4});
+		
+		d2.showAll();
+		Dataframe d2 = d.selectColumns(new String[] {"balance", "id"});
 		d2.showAll();
 		*/
 		
