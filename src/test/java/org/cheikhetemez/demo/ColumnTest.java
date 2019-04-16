@@ -1,6 +1,7 @@
 package org.cheikhetemez.demo;
 
 import column.Column;
+import interfaces.Type_t_itf;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -126,6 +127,80 @@ public class ColumnTest extends TestCase {
     	if(myStringColumn.getName() != newName) {
     		fail("function setName() of the class Column does not work correctly");
     	}
+    }
+    
+    public void testSetType() {
+    	Type_t_itf newType = new T_String();
+    	assertNotNull(newType);
+    	Type_t_itf typeForChange = new T_Bool();
+    	assertNotNull(typeForChange);
+    	Column newColumn = new Column("MyColumn", newType);
+    	assertNotNull(newColumn);
+    	newColumn.setType(typeForChange);
+    	
+    	if(newColumn.getType() != "bool") {
+    		fail("TEST FAILDE : Method setType of Column does not work");
+    	}
+    	
+    }
+    public void testCompareTo() {
+    	Type_t_itf newType = new T_String();
+    	assertNotNull(newType);
+    	Column newColumn = new Column("MyColumn", newType);
+    	Column sameColumn = newColumn;
+    	
+    	
+    	if(!(newColumn.compareTo(sameColumn) == 0)) {
+    		fail("TEST FAILDE : Method compareTo of Column does not work");
+    	}
+    }
+    
+    public void testCompareToWithDifferentValue() {
+
+    	    Type_t_itf newType = new T_String();
+	       	assertNotNull(newType); 
+	       	Column newColumn = new Column("MyColumn", newType);
+	       	assertNotNull(newColumn);
+	       	Column anothercol = new Column("nouveau", newType);
+	       	
+	       	if((newColumn.compareTo(anothercol) == 0)) {
+	       		fail("TEST FAILDE : Method compareTo of Column does not work");
+	       	}
+
+    	
+    }
+    
+
+    
+    
+    public void testEquals() {
+    	Type_t_itf newType = new T_String();
+    	assertNotNull(newType);
+    	Type_t_itf anotherType = new T_Int();
+    	assertNotNull(anotherType);
+    	Column newColumn = new Column("MyColumn", newType);
+    	assertNotNull(newColumn);
+    	Column anotherColumn = new Column("anotherColum", anotherType);
+    	
+    	if(anotherColumn.equals(newColumn)) {
+    		fail("TEST FAILDE : Method equals of Column does not work");
+    	}
+    } 
+    
+    public void testEqualsWithBadValue() {
+    	try {
+    		Type_t_itf newType = new T_String();
+        	Object newObject = new Object();
+        	Column newColumn = new Column("MyColumn", newType);
+        	assertNotNull(newColumn);
+
+        	if(newColumn.equals(newObject)) { 
+        		fail("TEST FAILDE : Method equals of Column does not work");
+        	}
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
     }
     
     public void testSetBadColumnName() {

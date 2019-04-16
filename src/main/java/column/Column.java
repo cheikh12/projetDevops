@@ -2,7 +2,7 @@ package column;
 
 import interfaces.Type_t_itf;
 
-public class Column implements Comparable {
+public class Column implements Comparable<Column> {
 	
 	private String name;
 	private Type_t_itf type;
@@ -33,29 +33,22 @@ public class Column implements Comparable {
 		this.type = type;
 	}
 
-	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
-		if (o instanceof Column) {
-			return this.name.compareTo(((Column) o).name);
-		}
-		// add else 
-		return 0;
-	}
 	
 	@Override
     public boolean equals(Object o) {
 		if (o instanceof Column) {
 			return this.getName().equals( ((Column) o).getName() ) && this.getType().equals( ((Column) o).getType());
 		} 
-		else
-			try {
-				throw new Exception("Comparing with incomparable object type");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		return false;
 		
+	}
+
+	public int compareTo(Column o) {
+		// TODO Auto-generated method stub
+				if (o instanceof Column) {
+					return this.name.compareTo(((Column) o).name);
+				}
+				return 0;
 	}
 	
 }

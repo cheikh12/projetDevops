@@ -1,6 +1,7 @@
 package interfaces;
 
 import dataframe.Dataframe;
+import interfaces.*;
 
 public interface Dataframe_itf {
 	

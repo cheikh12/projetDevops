@@ -29,9 +29,6 @@ public class Dataframe implements Dataframe_itf {
 	private int nbDataRows;
 	private String[][] csvArray;
 		
-	public Dataframe(String csvFileName) {
-		
-	}
 	
 	public Dataframe(String[][] data) throws Exception {
 		constructDataframe(data);
@@ -334,6 +331,10 @@ public class Dataframe implements Dataframe_itf {
 	
 	public String[][] getDataSet2DArray(){
 		return dataSet2DArray;
+	}
+	
+	public String[] getColumnType() {
+		return columnTypes;
 	}
 	
 	public LinkedHashMap<Column, ArrayList<Row>> getDataset() {
