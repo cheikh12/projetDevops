@@ -34,7 +34,7 @@ public class T_String implements Type_t_itf {
 
 	public boolean isNull() {
 		// TODO Auto-generated method stub
-		return false;
+		return s.equals("");
 	}
 	
 	public String toString() {

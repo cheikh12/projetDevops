@@ -33,7 +33,7 @@ public class T_Bool implements Type_t_itf {
 
 	public boolean isNull() {
 		// TODO Auto-generated method stub
-		return false;
+		return b == null;
 	}
 
 	public String toString() {

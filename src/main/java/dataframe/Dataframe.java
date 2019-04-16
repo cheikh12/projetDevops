@@ -21,13 +21,40 @@ public class Dataframe implements Dataframe_itf {
 	private String[] columnTypes;
 	
 	private int nbDataRows;
-		
-	public Dataframe(String csvFileName) {
+	
+	
+	/**
+	 * Creates a Dataframe instance from a .csv file. 
+	 * <p>
+	 * The first row of csvFileName should contain the names of the columns. 
+	 * The second row of csvFileName should contain the types of the columns. The type of a column can only be one of the following: "int", "double", "bool", or "string".  
+	 * The remaining rows in csvFileName should contain the values of each of the columns.
+	 * 
+	 * @param path is an absolute path to a ".csv" file
+	 * @param separateur is a String representing the cell separator of the .csv file
+	 * @throws Exception if the .csv file does not contain at least the column name(s) and their type(s), or if an invalid type is specified, 
+	 * or if a column name is specified more than once
+	 */
+	public Dataframe(String path, String separateur) {
 		
 	}
 	
+	
+	/**
+	 * Creates a Dataframe instance from a 2-dimensional String array.
+	 * <p>
+	 * The first row of argument data should contain the names of the columns. 
+	 * The second row of argument data should contain the types of the columns. The type of a column can only be one of the following: "int", "double", "bool", or "string".
+	 * The rest of the rows in data should contain the values of each of the columns.
+	 * 
+	 * @param data a 2-dimensional array of Strings from which a Dataframe instance is created
+	 * @throws Exception if data does not contain at least the column name(s) and their type(s), or if an invalid type is specified, 
+	 * or if a column name is specified more than once
+	 */
 	public Dataframe(String[][] data) throws Exception {
 		//String[] columnNames = data[0];
+		if (data.length < 2)
+			throw new Exception("Not enough data to create a dataframe!");
 		
 		for (int i = 0; i < data[1].length; i++) {
 			if (!isValidType(data[1][i])) 
@@ -134,39 +161,10 @@ public class Dataframe implements Dataframe_itf {
 			*/
 	}
 	
-	private boolean isValidType(String type) {
-		return type.equals("int") || type.equals("double") || type.equals("bool") || type.equals("string");
-	}
 	
-	private void init2DArrayOfDataSet() {
-		Set<Column> columns = dataSet.keySet();
-		int nbColumns = columns.size();
-		int nbRows = this.nbDataRows;
-		
-		this.dataSet2DArray = new String[nbRows + 1][nbColumns];
-		
-		int r = 0;
-		for (Column col : columns) {
-			dataSet2DArray[0][r] = col.getName();
-			r++;
-		}
-		
-		Collection<ArrayList<Row>> dataValues = dataSet.values();
-		Object[] dataValuesArray =  dataValues.toArray();
-		
-		for (int c = 0; c < dataValuesArray.length; c++) {
-			@SuppressWarnings("unchecked")
-			ArrayList<Row> currentColData = (ArrayList<Row>) dataValuesArray[c];
-			
-			for (int l = 0; l < currentColData.size(); l++) {
-				if (currentColData.get(l).getElement().isNull())
-					dataSet2DArray[l + 1][c] = "";
-				else
-					dataSet2DArray[l + 1][c] = (String) currentColData.get(l).toString();
-			}
-		}
-	}
-	
+	/**
+	 * @see Dataframe_itf 
+	 */
 	public void showAll() {
 		for (int i = 0; i < this.dataSet2DArray.length; i++) {
 			for (int j = 0; j < this.dataSet2DArray[0].length; j++) {
@@ -176,7 +174,11 @@ public class Dataframe implements Dataframe_itf {
 		}
 		return;
 	}
+
 	
+	/**
+	 * @see Dataframe_itf 
+	 */
 	public void showHead(int n) {
 		int nbRowsToShow = -1;
 		
@@ -198,7 +200,11 @@ public class Dataframe implements Dataframe_itf {
 		}
 		return;
 	}
+
 	
+	/**
+	 * @see Dataframe_itf 
+	 */
 	public void showTail(int n) {
 		int nbRowsToShow = -1;
 		
@@ -225,7 +231,11 @@ public class Dataframe implements Dataframe_itf {
 		}
 		return;
 	}
+
 	
+	/**
+	 * @see Dataframe_itf 
+	 */
 	public Dataframe selectRow(int idx) throws Exception {
 		if (idx + 1 >= this.dataSet2DArray.length) 
 			throw new Exception("Index out of bounds");
@@ -252,7 +262,11 @@ public class Dataframe implements Dataframe_itf {
 		}
 		return res;
 	}
+
 	
+	/**
+	 * @see Dataframe_itf 
+	 */
 	public Dataframe selectRows(int[] idx) throws Exception {
 		int nbRowsToSelect = idx.length;
 		
@@ -301,11 +315,11 @@ public class Dataframe implements Dataframe_itf {
 		}
 		return res;
 	}
+
 	
-	public Dataframe selectRowsBetween(int i, int j) {
-		return null;
-	}
-	
+	/**
+	 * @see Dataframe_itf 
+	 */
 	public Dataframe selectColumn(String column) throws Exception {
 		Dataframe res = null;
 		
@@ -353,7 +367,11 @@ public class Dataframe implements Dataframe_itf {
 		res = new Dataframe(newData);
 		return res;
 	}
+
 	
+	/**
+	 * @see Dataframe_itf 
+	 */
 	public Dataframe selectColumns(String[] columns) throws Exception {
 		Dataframe res = null;
 		
@@ -410,7 +428,11 @@ public class Dataframe implements Dataframe_itf {
 		res = new Dataframe(newData);
 		return res;
 	}
+
 	
+	/**
+	 * @see Dataframe_itf 
+	 */
 	public Double[] min(String[] columns) throws Exception {
 		int columnsArgLength = columns.length;
 		
@@ -449,7 +471,11 @@ public class Dataframe implements Dataframe_itf {
 		}
 		return res;
 	}
+
 	
+	/**
+	 * @see Dataframe_itf 
+	 */
 	public Double[] max(String[] columns) throws Exception {
 		int columnsArgLength = columns.length;
 		
@@ -489,31 +515,10 @@ public class Dataframe implements Dataframe_itf {
 		return res;
 	}
 	
-	private boolean checkIfAllColumnsExist(String[] columns) {
-		int columnsArgLength = columns.length;
-		String[] columnsArgTypes = new String[columnsArgLength];
-		
-		for (int i = 0; i < columnsArgLength; i++) {
-			if (this.sortedColumnTypes.containsKey(columns[i])) {
-				columnsArgTypes[i] = this.sortedColumnTypes.get(columns[i]);
-			}
-			else {
-				return false;
-			}
-		}
-		return true;
-	}
 	
-	private String[] getTypesOfColumnArgs(String[] columns) {
-		int columnsArgLength = columns.length;
-		String[] columnsArgTypes = new String[columnsArgLength];
-		
-		for (int i = 0; i < columnsArgLength; i++) 
-			columnsArgTypes[i] = this.sortedColumnTypes.get(columns[i]);
-		
-		return columnsArgTypes;
-	}
-	
+	/**
+	 * @see Dataframe_itf 
+	 */
 	public Double[] mean(String[] columns) throws Exception {
 		int columnsArgLength = columns.length;
 		
@@ -554,6 +559,88 @@ public class Dataframe implements Dataframe_itf {
 		return res;
 	}
 	
+	
+	/**
+	 * Tests if a String type is valid
+	 * 
+	 * @param type a String
+	 * @return true if type is in the set {int, double, bool, string} and false otherwise
+	 */
+	private boolean isValidType(String type) {
+		return type.equals("int") || type.equals("double") || type.equals("bool") || type.equals("string");
+	}
+	
+	
+	/**
+	 * Initializes a 2-dimensional array representation of the Dataframe for faster row indexing  
+	 */
+	private void init2DArrayOfDataSet() {
+		Set<Column> columns = dataSet.keySet();
+		int nbColumns = columns.size();
+		int nbRows = this.nbDataRows;
+		
+		this.dataSet2DArray = new String[nbRows + 1][nbColumns];
+		
+		int r = 0;
+		for (Column col : columns) {
+			dataSet2DArray[0][r] = col.getName();
+			r++;
+		}
+		
+		Collection<ArrayList<Row>> dataValues = dataSet.values();
+		Object[] dataValuesArray =  dataValues.toArray();
+		
+		for (int c = 0; c < dataValuesArray.length; c++) {
+			@SuppressWarnings("unchecked")
+			ArrayList<Row> currentColData = (ArrayList<Row>) dataValuesArray[c];
+			
+			for (int l = 0; l < currentColData.size(); l++) {
+				if (currentColData.get(l).getElement().isNull())
+					dataSet2DArray[l + 1][c] = "";
+				else
+					dataSet2DArray[l + 1][c] = (String) currentColData.get(l).toString();
+			}
+		}
+	}
+	
+	
+	/**
+	 * 
+	 * @param columns an array of Strings 
+	 * @return true if all strings in columns exist in the Dataframe and false otherwise
+	 */
+	private boolean checkIfAllColumnsExist(String[] columns) {
+		int columnsArgLength = columns.length;
+		String[] columnsArgTypes = new String[columnsArgLength];
+		
+		for (int i = 0; i < columnsArgLength; i++) {
+			if (this.sortedColumnTypes.containsKey(columns[i])) {
+				columnsArgTypes[i] = this.sortedColumnTypes.get(columns[i]);
+			}
+			else {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	
+	/**
+	 * 
+	 * @param columns an array of column names in the Dataframe 
+	 * @return a String array of the types of each column in columns
+	 */
+	private String[] getTypesOfColumnArgs(String[] columns) {
+		int columnsArgLength = columns.length;
+		String[] columnsArgTypes = new String[columnsArgLength];
+		
+		for (int i = 0; i < columnsArgLength; i++) 
+			columnsArgTypes[i] = this.sortedColumnTypes.get(columns[i]);
+		
+		return columnsArgTypes;
+	}
+
+	
 	public static void main(String[] args) throws Exception {
 		String[][] data = {
 				{"id", "fname", "lname", "balance", "age"}, 
@@ -571,9 +658,12 @@ public class Dataframe implements Dataframe_itf {
 		
 		System.out.println("\n\n\n");
 		
-		Double[] meanRes = d.min(new String[] {"id", "fname", "balance"});
+		Dataframe d2 = d.selectColumn("fname");// d.selectRow(1); 
+		d2.showAll();
 		
-		System.out.println(meanRes[0]);
+		//Double[] meanRes = d.min(new String[] {"id", "fname", "balance"});
+		
+	//	System.out.println(meanRes[0]);
 		
 		
 		
