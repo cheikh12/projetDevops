@@ -38,7 +38,7 @@ public class DataframeTest {
 	};
 
 	/**
-	 * @throws java.lang.Exception
+	 * @throws java.lang.Exception 
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -175,9 +175,9 @@ public class DataframeTest {
 	
 	@Test
 	public void testConstructorCSV() throws Exception {
-		Dataframe newData = new Dataframe("identites.csv", ";");
+		Dataframe newData = new Dataframe("C:\\Users\\mbeng\\Documents\\COURS\\Master\\deuxieme semestre\\DevOps\\projetDevops\\identites.csv", ";");
 		if(newData.getColumnTypes() == null || newData.getDataset()==null || newData.getDataSet2DArray() == null) {
-			fail("TEST FAILED : The constructor with CSV file does not work correctly");
+			fail("TEST FAILED : The constructor with CSV file does not work correctly"); 
 		}
 	}
 	
@@ -384,6 +384,52 @@ public class DataframeTest {
 		    System.out.println(e.getMessage());
 		}
 	}
-
-
+	@Test
+	public void testMin() throws Exception {
+		Dataframe myData = new Dataframe(correctData);
+		double min = 19;
+		String[] columnNames = {"age"};
+		Double[] result = myData.min(columnNames);
+		if(result[0] != min) {
+			fail("method min of dataframe does not work");
+		}
+	}
+	
+	@Test
+	public void testMax() throws Exception {
+		Dataframe myData = new Dataframe(correctData);
+		double max = 68;
+		String[] columnNames = {"age"};
+		Double[] result = myData.max(columnNames);
+		if(result[0] != max) {
+			fail("method max of dataframe does not work");
+		}
+	}
+	@Test
+	public void testMean() throws Exception {
+		Dataframe myData = new Dataframe(correctData);
+		double mean = 215/6;
+		String[] columnNames = {"age"};
+		Double[] result = myData.mean(columnNames);
+		if(result[0]-mean<0.00) { 
+			fail("method mean of dataframe does not work"); 
+		}
+	}
+	
+	@Test
+	public void testSelectColumns() throws Exception {
+		String[] columnNames = {"balance","age"};
+		Dataframe myData = new Dataframe(correctData);
+		Dataframe resultSelected = myData.selectColumns(columnNames);
+		
+		if(resultSelected.getColumnTypes()==null || resultSelected.getDataset()==null) {
+			fail("method selecColumns does not work");
+		}
+	}
+	
+	@Test
+	public void mainTest() throws Exception {
+		Dataframe myData = new Dataframe(correctData);
+		myData.main(null);
+	}
 }

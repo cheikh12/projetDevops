@@ -32,7 +32,7 @@ public class Column implements Comparable<Column> {
 	public void setType(Type_t_itf type) {
 		this.type = type;
 	}
-
+ 
 	
 	@Override
     public boolean equals(Object o) {
