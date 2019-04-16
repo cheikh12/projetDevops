@@ -1,8 +1,10 @@
 package dataframe;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -10,7 +12,12 @@ import column.Column;
 import interfaces.Dataframe_itf;
 import interfaces.Type_t_itf;
 import row.Row;
-import type_t.*;
+import type_t.T_Bool;
+import type_t.T_Double;
+import type_t.T_Int;
+import type_t.T_String;
+
+
 
 public class Dataframe implements Dataframe_itf {
 	
@@ -20,105 +27,124 @@ public class Dataframe implements Dataframe_itf {
 	private String[] columnTypes;
 	private String[] sortedColumnTypes;
 	private int nbDataRows;
+	private String[][] csvArray;
 		
 	public Dataframe(String csvFileName) {
 		
 	}
 	
 	public Dataframe(String[][] data) throws Exception {
+		constructDataframe(data);
+	}
+	
+	public Dataframe(String pathToCsv, String separator) throws Exception {
+		File theFile = new File(pathToCsv);
+		CsvHelper helper = new CsvHelper();
+		List<String> resultList = helper.readFile(theFile) ;
+		String[] lineTmp = resultList.get(0).split(separator);
+		int nbRow = resultList.size();
+		int nbColumn = lineTmp.length;
+		String [][] resultArray = new String [nbRow][nbColumn];
+		for(int i = 0; i<nbRow; i++) {
+			resultArray[i] = resultList.get(i).split(separator); 
+		}
+		constructDataframe(resultArray);
+	}	
+	
+	private void constructDataframe(String[][] data) throws Exception {
 		//String[] columnNames = data[0];
 		
-		for (int i = 0; i < data[1].length; i++) {
-			if (!isValidType(data[1][i])) 
-				throw new Exception("Invalid data type for column '" + data[0][i] + "'");
-		}
-		columnTypes = data[1];
-		sortedColumnTypes = new String[data[1].length];
-		
-		int nbRows = data.length;
-		this.dataSet = new LinkedHashMap<Column, ArrayList<Row>>();
-		this.sortedDataSet = new TreeMap<Column, ArrayList<Row>>();
-		this.nbDataRows = 0;
-		
-		// outer loop iterating over the columns of the 2D array
-		for (int c = 0; c < data[0].length; c++) {
-			Type_t_itf columnType = null;
-			String columnName = data[0][c];
-			
-			if (data[1][c].equals("int")) {
-				columnType = new T_Int();
-			}
-			else if (data[1][c].equals("double")) {
-				columnType = new T_Double();
-			}
-			else if (data[1][c].equals("string")) {
-				columnType = new T_String();
-			}
-			else if (data[1][c].equals("bool")) {
-				columnType = new T_Bool();
-			}
-			else {
-				throw new Exception("Unknown data type for column '" + columnName + "'");
-			}
-			
-			Column col = new Column(columnName, columnType);
-			ArrayList<Row> colRows = new ArrayList<Row>();
-			
-			if (nbRows > 2) { // test to see if dataframe contains data or just defined the columns
+				for (int i = 0; i < data[1].length; i++) {
+					if (!isValidType(data[1][i])) 
+						throw new Exception("Invalid data type for column '" + data[0][i] + "'");
+				}
+				columnTypes = data[1];
+				sortedColumnTypes = new String[data[1].length];
 				
-				// inner loop iterating over rows of current column to add its elements
-				for (int r = 2; r < nbRows; r++) {
-
-					Row currentRow = null;
-					String currentRowElement = data[r][c];
-					//System.out.println(currentRowElement);
+				int nbRows = data.length;
+				this.dataSet = new LinkedHashMap<Column, ArrayList<Row>>();
+				this.sortedDataSet = new TreeMap<Column, ArrayList<Row>>();
+				this.nbDataRows = 0;
+				
+				// outer loop iterating over the columns of the 2D array
+				for (int c = 0; c < data[0].length; c++) {
+					Type_t_itf columnType = null;
+					String columnName = data[0][c];
 					
-					if (columnType instanceof T_Int) {
-						Integer element = Integer.parseInt(currentRowElement);
-						currentRow = new Row(new T_Int(element));
+					if (data[1][c].equals("int")) {
+						columnType = new T_Int();
 					}
-					else if (columnType instanceof T_Double) {
-						double element = Double.parseDouble(currentRowElement);
-						currentRow = new Row(new T_Double(element));
+					else if (data[1][c].equals("double")) {
+						columnType = new T_Double();
 					}
-					else if (columnType instanceof T_String) {
-						currentRow = new Row(new T_String(currentRowElement));
+					else if (data[1][c].equals("string")) {
+						columnType = new T_String();
 					}
-					else if (columnType instanceof T_Bool) {
-						boolean element = Boolean.valueOf(currentRowElement);
-						currentRow = new Row(new T_Bool(element));
+					else if (data[1][c].equals("bool")) {
+						columnType = new T_Bool();
 					}
 					else {
 						throw new Exception("Unknown data type for column '" + columnName + "'");
 					}
 					
-					if (c == 0)
-						nbDataRows++;
-					colRows.add(currentRow);
+					Column col = new Column(columnName, columnType);
+					ArrayList<Row> colRows = new ArrayList<Row>();
+					
+					if (nbRows > 2) { // test to see if dataframe contains data or just defined the columns
+						
+						// inner loop iterating over rows of current column to add its elements
+						for (int r = 2; r < nbRows; r++) {
+
+							Row currentRow = null;
+							String currentRowElement = data[r][c];
+							//System.out.println(currentRowElement);
+							
+							if (columnType instanceof T_Int) {
+								Integer element = Integer.parseInt(currentRowElement);
+								currentRow = new Row(new T_Int(element));
+							}
+							else if (columnType instanceof T_Double) {
+								double element = Double.parseDouble(currentRowElement);
+								currentRow = new Row(new T_Double(element));
+							}
+							else if (columnType instanceof T_String) {
+								currentRow = new Row(new T_String(currentRowElement));
+							}
+							else if (columnType instanceof T_Bool) {
+								boolean element = Boolean.valueOf(currentRowElement);
+								currentRow = new Row(new T_Bool(element));
+							}
+							else {
+								throw new Exception("Unknown data type for column '" + columnName + "'");
+							}
+							
+							if (c == 0)
+								nbDataRows++;
+							colRows.add(currentRow);
+							
+						}
+						//dataSet.put(col, colRows);
+					}
+					if (!this.sortedDataSet.containsKey(col)) {
+						dataSet.put(col, colRows);
+						sortedDataSet.put(col, colRows);
+					}
+					else 
+						throw new Exception("Trying to create a column that already exists!");
 					
 				}
-				//dataSet.put(col, colRows);
-			}
-			if (!this.sortedDataSet.containsKey(col)) {
-				dataSet.put(col, colRows);
-				sortedDataSet.put(col, colRows);
-			}
-			else 
-				throw new Exception("Trying to create a column that already exists!");
-			
-		}
-		
-		init2DArrayOfDataSet();
-		Set<Column> cols = sortedDataSet.keySet();
-		int sortedColumnTypesIdx = 0;
-		for (Column c : cols) {
-			this.sortedColumnTypes[sortedColumnTypesIdx] = c.getType();
-			sortedColumnTypesIdx++;
-			//System.out.println(c.getName());
-		}
-		
-		for (int i = 0; i < sortedColumnTypes.length; i++)
-			System.out.println(sortedColumnTypes[i]);
+				
+				init2DArrayOfDataSet();
+				Set<Column> cols = sortedDataSet.keySet();
+				int sortedColumnTypesIdx = 0;
+				for (Column c : cols) {
+					this.sortedColumnTypes[sortedColumnTypesIdx] = c.getType();
+					sortedColumnTypesIdx++;
+					//System.out.println(c.getName());
+				}
+				
+				for (int i = 0; i < sortedColumnTypes.length; i++)
+					System.out.println(sortedColumnTypes[i]);
 	}
 	
 	private boolean isValidType(String type) {
@@ -306,6 +332,18 @@ public class Dataframe implements Dataframe_itf {
 		return null;
 	}
 	
+	public String[][] getDataSet2DArray(){
+		return dataSet2DArray;
+	}
+	
+	public LinkedHashMap<Column, ArrayList<Row>> getDataset() {
+		return dataSet;
+	}
+	
+	public String[] getColumnTypes() {
+		return columnTypes;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		String[][] data = {
 				{"id", "fname", "lname", "balance", "age"}, 
@@ -324,11 +362,11 @@ public class Dataframe implements Dataframe_itf {
 		*/
 				
 		Dataframe d = new Dataframe(data); 
-		d.showAll();
+		//d.showAll();
 		
 		System.out.println("\n\n\n");
 		
-		//d.showTail(4);
+		d.showAll();
 		
 		/*
 		Dataframe d2 = d.selectRows(new int[]{0, 1, 3, 5, 4});

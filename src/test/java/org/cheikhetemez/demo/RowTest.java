@@ -87,7 +87,9 @@ public class RowTest extends TestCase {
 }
 	
 	@Test
-	public void testSetBadElement() {
+	public void testSetNullElement() {
+		Type_t_itf n = null;
+		Row newRow = new Row(n);
 	   	 //fail("Not yet implemented");
 	    }
 	@Test
