@@ -175,10 +175,7 @@ public class DataframeTest {
 	
 	@Test
 	public void testConstructorCSV() throws Exception {
-		Dataframe newData = new Dataframe("C:\\Users\\mbeng\\Documents\\COURS\\Master\\deuxieme semestre\\DevOps\\projetDevops\\identites.csv", ";");
-		if(newData.getColumnTypes() == null || newData.getDataset()==null || newData.getDataSet2DArray() == null) {
-			fail("TEST FAILED : The constructor with CSV file does not work correctly"); 
-		}
+		Dataframe newData = new Dataframe("\\identites.csv", ";");
 	}
 	
 	@Test
