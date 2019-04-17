@@ -37,33 +37,6 @@ public class DataframeTest {
 			{"6", "Aunt", "May", "34610.98", "68"}
 	};
 
-	/**
-	 * @throws java.lang.Exception 
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
 	
 	public boolean isSameData( String[][] tabString, Dataframe data) {
 		Object tabValue;

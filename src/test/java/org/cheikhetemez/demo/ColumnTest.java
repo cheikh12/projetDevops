@@ -12,47 +12,6 @@ import type_t.T_String;
 
 public class ColumnTest extends TestCase {
 	
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		//creation of column of integers for the tests cases parameters
-		T_Int  intColumnType = new T_Int();
-    	assertNotNull("The object intColumnType must not be null for this tests", intColumnType); 
-    	String intColumnName = "columnOfInt";
-    	Column columOfIntegers = new Column(intColumnName, intColumnType);
-    	assertNotNull("the object columOfIntegers must exit for this tests", columOfIntegers);
-    	
-    	//creation of column of doubles for the tests cases parameters
-    	T_Double doubleColumnType = new T_Double();
-    	assertNotNull("The object doubleColumnType must not be null for this tests", doubleColumnType); 
-    	String doubleColumnName = "columOfDoubles";
-    	Column columnOfbooleans = new Column(doubleColumnName, doubleColumnType);
-    	assertNotNull("the object columnOfbooleans must exit for this tests", columnOfbooleans);
-    	
-    	//creation of column of Strings for the tests cases parameters
-    	T_String stringColumnType = new T_String();
-    	assertNotNull("The object stringColumnType must not be null for this tests", stringColumnType); 
-    	String stringColumnName = "columOfStrings";
-    	Column columnOfStrings = new Column(stringColumnName, stringColumnType);
-    	assertNotNull("the object columnOfStrings must exit for this tests", columnOfStrings);
-    	
-    	//creation of column of booleans for the tests cases parameters
-    	T_Bool booleanColumnType = new T_Bool();
-    	assertNotNull("The object booleanColumnType must not be null for this tests", booleanColumnType); 
-    	String booleanColumnName = "columOfBooleans";
-    	Column columnOfBooleans = new Column(booleanColumnName, booleanColumnType);
-    	assertNotNull("the object columnOfbooleans must exit for this tests", columnOfBooleans);
-    	
-	}
-	
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-	
 	public static Test suite()
     {
         return new TestSuite( ColumnTest.class );
@@ -201,6 +160,17 @@ public class ColumnTest extends TestCase {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
 		}
+    }
+    
+    public void testUtilitaries() {
+    	Column forTest = new Column("col", new T_Int());
+    	forTest.setName("changed");
+    	forTest.setType(new T_Bool());
+    	boolean b = forTest.equals(forTest);
+    	
+    	if(forTest == null) {
+    		fail("");
+    	}
     }
     
     public void testSetBadColumnName() {

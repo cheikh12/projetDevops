@@ -9,30 +9,23 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import interfaces.Type_t_itf;
+import type_t.T_Bool;
+import type_t.T_Double;
 import type_t.T_Int;
+import type_t.T_String;
 
 public class T_IntTest {
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Test
 	public void testPrint() {
-		Type_t_itf t =new T_Int();
-		t.print();
+		Type_t_itf tInt =new T_Int();
+		Type_t_itf tBool =new T_Bool();
+		Type_t_itf tString =new T_String();
+		Type_t_itf tDouble =new T_Double();
+		tInt.print();
+		tBool.print();
+		tString.print();
+		tDouble.print();
 	}
 	
 	@Test
