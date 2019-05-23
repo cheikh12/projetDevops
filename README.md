@@ -56,4 +56,4 @@ en liaison avec le dépôt github pour l'intégration continue et couverture de 
 Ce projet nous a permis de manipuler des structures de données dans la representation de notre Dataframe. 
 Ça nous a aussi présenté l'opportunité de mettre en pratique des notions et des outils vus en cours et en TP pour la prémière fois.
 Nous avons pu découvrir  en travaillant que ces outils sont beaucoup plus utiles et moins compliqués qu'ils avaient l'aire  au départ. 
-En plus, nous avons découvert quelques améliorations dans JUnit 5 par rapport à Junit 4, par exemple la possibilité de faire des tests parametrés. 
+En plus, nous avons découvert quelques améliorations dans JUnit 5 par rapport à Junit 4, par exemple la possibilité de faire des tests parametrés
