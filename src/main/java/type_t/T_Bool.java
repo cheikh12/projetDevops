@@ -13,7 +13,6 @@ public class T_Bool implements Type_t_itf  {
 		super();
 		this.b = b;
 	}
-	
 	/**
 	 * a default constructor used to instanciate a Column of type bool
 	 */
